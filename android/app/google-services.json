@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "700176131607",
+    "project_id": "influenza-fyp",
+    "storage_bucket": "influenza-fyp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700176131607:android:598b0a6e6adddd92bd9e52",
+        "android_client_info": {
+          "package_name": "com.example.influenza"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC7iMcxdzkcGfHy0d06kJ9UNxXwjcV3d5I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
