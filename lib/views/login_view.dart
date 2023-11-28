@@ -1,7 +1,5 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../firebase_options.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -30,54 +28,74 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        TextFormField(
-          controller: _email,
-          enableSuggestions: false,
-          autocorrect: false,
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your email address';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(hintText: "Enter your email here"),
-        ),
-        TextFormField(
-          controller: _password,
-          obscureText: true,
-          enableSuggestions: false,
-          autocorrect: false,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter your password';
-            }
-            return null;
-          },
-          decoration:
-              const InputDecoration(hintText: "Enter your password here"),
-        ),
-        TextButton(
-            onPressed: () async {
-              final email = _email.text;
-              final password = _password.text;
-              try {
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                print(userCredential);
-                print('yuh we logged in');
-              } on FirebaseAuthException catch (e) {
-                print('Failed with error code:  ${e.code}');
-                if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-                  print("You have entered an invalid email or password.");
+    return Scaffold(
+      appBar: AppBar(title: const Text("Login")),
+      body: Form(
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _email,
+              enableSuggestions: false,
+              autocorrect: false,
+              keyboardType: TextInputType.emailAddress,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email address';
                 }
-              }
-            },
-            child: const Text("Login")),
-      ],
+                return null;
+              },
+              decoration: const InputDecoration(
+                  hintText: "Enter your email here",
+                  prefixIcon: Icon(Icons.email)),
+            ),
+            TextFormField(
+              controller: _password,
+              obscureText: true,
+              enableSuggestions: false,
+              autocorrect: false,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                  hintText: "Enter your password here",
+                  prefixIcon: Icon(Icons.password)),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: FilledButton(
+                  onPressed: () async {
+                    final email = _email.text;
+                    final password = _password.text;
+                    try {
+                      final userCredential = await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: email, password: password);
+                      print(userCredential);
+                      print('yuh we logged in');
+                    } on FirebaseAuthException catch (e) {
+                      print('Failed with error code:  ${e.code}');
+                      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+                        print("You have entered an invalid email or password.");
+                      }
+                    }
+                  },
+                  child: const Text("Login")),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FilledButton.tonal(
+                  onPressed: () {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        '/register/', (route) => false);
+                  },
+                  child: const Text('Not registered yet?, Register here!')),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
