@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:influenza/constants/routes.dart';
+import 'package:influenza/utilities/show_error_dialog.dart';
+import 'dart:developer' as devtools show log;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -69,24 +72,29 @@ class _RegisterViewState extends State<RegisterView> {
             child: FilledButton(
                 onPressed: () async {
                   try {
-                    final email = _email.text;
-                    final password = _password.text;
-
+                    final email = _email.text.trim();
+                    final password = _password.text.trim();
                     final userCredential = await FirebaseAuth.instance
                         .createUserWithEmailAndPassword(
                             email: email, password: password);
+                    devtools.log(userCredential.toString());
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      print('The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      print('The account already exists for that email.');
+                    // for firebaseauth exceptions
+                    if (e.code == 'email-already-in-use') {
+                      await showErrorDialog(context,
+                          'The account already exists for that email.');
+                    } else if (e.code == 'weak-password') {
+                      await showErrorDialog(
+                          context, 'The password provided is too weak.');
                     } else if (e.code == 'invalid-email') {
-                      print('This is not a valid email');
+                      devtools.log('');
+                      await showErrorDialog(
+                          context, 'This is not a valid email');
                     }
                   } catch (e) {
-                    print(e);
+                    //again for generic exceptions
+                    await showErrorDialog(context, e.toString());
                   }
-                  // print(userCredential);
                 },
                 child: const Text("Register")),
           ),
@@ -95,7 +103,7 @@ class _RegisterViewState extends State<RegisterView> {
             child: FilledButton.tonal(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/login/', (route) => false);
+                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
                 },
                 child: const Text('Already registered? Login here!')),
           )

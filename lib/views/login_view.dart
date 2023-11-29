@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:influenza/constants/routes.dart';
+import 'package:influenza/utilities/show_error_dialog.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -45,7 +48,7 @@ class _LoginViewState extends State<LoginView> {
                 return null;
               },
               decoration: const InputDecoration(
-                  hintText: "Enter your email here",
+                  hintText: "Enter your email address here",
                   prefixIcon: Icon(Icons.email)),
             ),
             TextFormField(
@@ -67,19 +70,44 @@ class _LoginViewState extends State<LoginView> {
               padding: const EdgeInsets.all(16.0),
               child: FilledButton(
                   onPressed: () async {
-                    final email = _email.text;
-                    final password = _password.text;
+                    final email = _email.text.trim();
+                    final password = _password.text.trim();
+                    final navigator = Navigator.of(context);
                     try {
                       final userCredential = await FirebaseAuth.instance
                           .signInWithEmailAndPassword(
-                              email: email, password: password);
-                      print(userCredential);
-                      print('yuh we logged in');
-                    } on FirebaseAuthException catch (e) {
-                      print('Failed with error code:  ${e.code}');
-                      if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
-                        print("You have entered an invalid email or password.");
+                        email: email,
+                        password: password,
+                      );
+                      devtools.log(userCredential.toString());
+                      if (userCredential.user!.emailVerified) {
+                        navigator.pushNamedAndRemoveUntil(
+                          influenzaHomeRoute,
+                          (route) => false,
+                        );
                       }
+                      // else {
+                      //   navigator.pushNamedAndRemoveUntil(
+                      //       '/verify/', (route) => false);
+                      // }
+                    } on FirebaseAuthException catch (e) {
+                      //handling all FirebaseAuth exceptions
+                      devtools.log('Failed with error code:  ${e.code}');
+                      if (e.code == 'invalid-email') {
+                        await showErrorDialog(context, 'Invalid email');
+                      } else if (e.code == 'wrong-password') {
+                        await showErrorDialog(context, 'Invalid password');
+                      } else if (e.code == 'user-not-found') {
+                        await showErrorDialog(context, 'User not found');
+                      } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+                        await showErrorDialog(
+                            context, 'Your email or password could be wrong');
+                      } else {
+                        await showErrorDialog(context, 'Error: ${e.code}');
+                      }
+                    } catch (e) {
+                      //for handling generic exceptions
+                      await showErrorDialog(context, e.toString());
                     }
                   },
                   child: const Text("Login")),
@@ -87,11 +115,16 @@ class _LoginViewState extends State<LoginView> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: FilledButton.tonal(
-                  onPressed: () {
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        '/register/', (route) => false);
-                  },
-                  child: const Text('Not registered yet?, Register here!')),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    registerRoute,
+                    (route) => false,
+                  );
+                },
+                child: const Text(
+                  'Not registered yet?, Register here!',
+                ),
+              ),
             )
           ],
         ),
