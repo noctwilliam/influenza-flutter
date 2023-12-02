@@ -1,8 +1,8 @@
-# influenza
+### Healthcare Tracker App; Influenza Severity Classification Using Machine Learning
 
 A new Flutter project.
 
-## Getting Started
+#### Getting Started
 
 This project is a starting point for a Flutter application.
 

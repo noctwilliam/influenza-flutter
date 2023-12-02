@@ -19,12 +19,12 @@ void main() {
         useMaterial3: true,
       ),
       home: const HomePage(),
-      // initialRoute: '/login',
       // Named routes [https://docs.flutter.dev/cookbook/navigation/named-routes]
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         influenzaHomeRoute: (context) => const InfluenzaView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     ),
   );

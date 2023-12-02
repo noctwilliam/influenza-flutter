@@ -72,19 +72,21 @@ class _LoginViewState extends State<LoginView> {
                   onPressed: () async {
                     final email = _email.text.trim();
                     final password = _password.text.trim();
-                    final navigator = Navigator.of(context);
                     try {
-                      final userCredential = await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
+                      await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: email,
                         password: password,
                       );
-                      devtools.log(userCredential.toString());
-                      if (userCredential.user!.emailVerified) {
-                        navigator.pushNamedAndRemoveUntil(
+                      final user = FirebaseAuth.instance.currentUser;
+                      if (user?.emailVerified ?? false) {
+                        // user's email is verified
+                        Navigator.of(context).pushNamedAndRemoveUntil(
                           influenzaHomeRoute,
                           (route) => false,
                         );
+                      } else {
+                        // user's email is not verified
+                        Navigator.of(context).pushNamed(verifyEmailRoute);
                       }
                       // else {
                       //   navigator.pushNamedAndRemoveUntil(

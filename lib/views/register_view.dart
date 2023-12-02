@@ -74,10 +74,12 @@ class _RegisterViewState extends State<RegisterView> {
                   try {
                     final email = _email.text.trim();
                     final password = _password.text.trim();
-                    final userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: email, password: password);
-                    devtools.log(userCredential.toString());
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        email: email, password: password);
+                    final user = FirebaseAuth.instance.currentUser;
+                    await user?.sendEmailVerification();
+                    Navigator.of(context).pushNamed(
+                        verifyEmailRoute); //we dont use removeuntil because we want to retain the routes
                   } on FirebaseAuthException catch (e) {
                     // for firebaseauth exceptions
                     if (e.code == 'email-already-in-use') {
