@@ -98,7 +98,6 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
-  // TODO: implement isEmailVerified
   bool get isEmailVerified {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
