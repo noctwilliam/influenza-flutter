@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
+import 'package:influenza/services/auth/auth_service.dart';
 
 class InfluenzaView extends StatefulWidget {
   const InfluenzaView({super.key});
@@ -25,9 +25,8 @@ class _InfluenzaViewState extends State<InfluenzaView> {
                 switch (value) {
                   case MenuAction.logout:
                     final logout = await showLogOutDialog(context);
-                    devtools.log(logout.toString());
                     if (logout) {
-                      await FirebaseAuth.instance.signOut();
+                      await AuthService.firebase().logOut();
                       navigator.pushNamedAndRemoveUntil(
                           loginRoute, (_) => false);
                     }
