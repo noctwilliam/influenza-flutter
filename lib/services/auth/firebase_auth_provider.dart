@@ -106,6 +106,26 @@ class FirebaseAuthProvider implements AuthProvider {
   }
 
   @override
+  String get id {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.uid;
+    } else {
+      throw UserNotLoggedInException();
+    }
+  }
+
+  @override
+  String get email {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.email ?? '';
+    } else {
+      throw UserNotLoggedInException();
+    }
+  }
+
+  @override
   bool get isEmailVerified {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {

@@ -26,8 +26,15 @@ class AuthService implements AuthProvider {
   AuthUser? get currentUser => provider.currentUser;
 
   @override
+  String get email => provider.email;
+
+  @override
+  String get id => provider.id;
+
+  @override
   bool get isEmailVerified => provider.isEmailVerified;
 
+  @override
   @override
   Future<AuthUser> logIn({
     required String email,
