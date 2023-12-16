@@ -102,11 +102,24 @@ class MockAuthProvider implements AuthProvider {
   bool get isEmailVerified => _user?.isEmailVerified ?? false;
 
   @override
-  Future<AuthUser> logIn({required String email, required String password}) {
+  String get email => _user!.email;
+
+  @override
+  String get id => _user!.id;
+
+  @override
+  Future<AuthUser> logIn({
+    required String email,
+    required String password,
+  }) {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'foo@bar.com') throw UserNotFoundAuthException();
     if (password == 'foobar') throw WrongPasswordAuthException();
-    const user = AuthUser(isEmailVerified: false);
+    const user = AuthUser(
+      id: "user_id",
+      email: "foo@bar.com",
+      isEmailVerified: false,
+    );
     _user = user;
     return Future.value(user);
   }
@@ -124,7 +137,11 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true);
+    const newUser = AuthUser(
+      id: 'user_id',
+      email: 'foo@gmail.com',
+      isEmailVerified: true,
+    );
     _user = newUser;
   }
 }
