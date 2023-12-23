@@ -19,6 +19,12 @@ class FirebaseCloudStorage {
 
   // could not see use case for update in this class
 
+  /// Retrieves the history of all severities for a specific owner user.
+  ///
+  /// The [ownerUserId] parameter specifies the ID of the owner user.
+  /// Returns a [Stream] of [Iterable] of [CloudSeverity] objects representing the history.
+  /// The stream emits a new iterable whenever there is a change in the history.
+  /// Only [CloudSeverity] objects with matching [ownerUserId] are included in the result.
   Stream<Iterable<CloudSeverity>> allHistory({required String ownerUserId}) =>
       history.snapshots().map((event) => event.docs
           .map((doc) => CloudSeverity.fromSnapshot(doc))
