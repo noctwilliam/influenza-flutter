@@ -3,6 +3,7 @@ import 'package:influenza/constants/routes.dart';
 import 'package:influenza/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
 import 'package:influenza/services/auth/auth_service.dart';
+import 'package:influenza/views/history_view.dart';
 
 class InfluenzaView extends StatefulWidget {
   const InfluenzaView({super.key});
@@ -12,6 +13,17 @@ class InfluenzaView extends StatefulWidget {
 }
 
 class _InfluenzaViewState extends State<InfluenzaView> {
+  int _currentIndex = 0;
+  final List<Widget> _pages = [
+    const HistoryView(),
+  ];
+
+  void onTabTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +58,92 @@ class _InfluenzaViewState extends State<InfluenzaView> {
             ),
           ],
         ),
-        body: const Column());
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    debugPrint('tap tap bich');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 125,
+                    child: Center(
+                      child: Text(
+                        'Home',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    debugPrint('tap tap bich');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 125,
+                    child: Center(
+                      child: Text(
+                        'Predict Severity',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    debugPrint('tap tap bich');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 125,
+                    child: Center(
+                      child: Text(
+                        'Severity History',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    debugPrint('tap tap bich');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 125,
+                    child: Center(
+                      child: Text(
+                        'FAQ',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
 

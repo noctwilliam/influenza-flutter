@@ -46,15 +46,7 @@ class FirebaseCloudStorage {
           .get()
           .then(
             (value) => value.docs.map(
-              (doc) {
-                return CloudSeverity(
-                  documentId: doc.id,
-                  ownerUserId: doc.data()[ownerUserIdField] as String,
-                  severity: doc.data()[severityField] as String,
-                  dateCreated:
-                      (doc.data()[dateCreatedField] as Timestamp).toDate(),
-                );
-              },
+              (doc) => CloudSeverity.fromSnapshot(doc),
             ),
           );
     } catch (e) {
@@ -66,11 +58,18 @@ class FirebaseCloudStorage {
   ///
   /// The [ownerUserId] parameter is required and specifies the ID of the owner user.
   /// This method adds a new history entry with the specified [ownerUserId] and an empty severity field.
-  void createNewHistory({required String ownerUserId}) async {
-    await history.add({
+  Future<CloudSeverity> createNewHistory({required String ownerUserId}) async {
+    final document = await history.add({
       ownerUserIdField: ownerUserId,
       severityField: '',
     });
+    final fetchedNote = await document.get();
+    return CloudSeverity(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      severity: '',
+      dateCreated: DateTime.now(),
+    );
   }
 
   static final FirebaseCloudStorage _shared =
