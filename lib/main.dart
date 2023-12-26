@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:influenza/components/bottom_navbar.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_service.dart';
 import 'package:influenza/views/login_view.dart';
@@ -14,7 +13,8 @@ void main() {
       title: 'Influenza App',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 36, 69, 158)),
+          seedColor: const Color.fromARGB(255, 36, 69, 158),
+        ),
         useMaterial3: true,
       ),
       home: const HomePage(),
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
             final user = AuthService.firebase().currentUser;
             if (user != null) {
               if (user.isEmailVerified) {
-                return const BottomNavBar();
+                return const InfluenzaView();
               } else {
                 return const VerifyEmailView();
               }
