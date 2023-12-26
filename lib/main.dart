@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:influenza/components/bottom_navbar.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_service.dart';
 import 'package:influenza/views/login_view.dart';
@@ -43,7 +44,7 @@ class HomePage extends StatelessWidget {
             final user = AuthService.firebase().currentUser;
             if (user != null) {
               if (user.isEmailVerified) {
-                return const InfluenzaView();
+                return const BottomNavBar();
               } else {
                 return const VerifyEmailView();
               }
