@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
@@ -7,12 +8,29 @@ import 'package:influenza/views/history_view.dart';
 import 'package:influenza/views/predict_view.dart';
 import 'package:influenza/views/profile_view.dart';
 
+// class InfluenzaView extends ConsumerWidget {
+//   const InfluenzaView({super.key});
+
+//   @override
+//   Widget build
+// }
+
 class InfluenzaView extends StatefulWidget {
   const InfluenzaView({super.key});
 
   @override
   State<InfluenzaView> createState() => _InfluenzaViewState();
 }
+
+// class Title extends StateNotifier<String> {
+//   Title() : super('Home');
+//   void setTitle(String title) => state = title;
+//   String get value => state;
+// }
+
+// final currentPageProvider = StateNotifierProvider<Title, String>(
+//   (ref) => Title(),
+// );
 
 class _InfluenzaViewState extends State<InfluenzaView> {
   int currentPageIndex = 0;
@@ -27,7 +45,7 @@ class _InfluenzaViewState extends State<InfluenzaView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home Page'),
+        title: const Text('Influenza Application'),
         actions: [
           PopupMenuButton<MenuAction>(
             onSelected: (MenuAction value) async {
