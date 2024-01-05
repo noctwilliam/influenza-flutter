@@ -17,6 +17,9 @@ class _PredictViewState extends ConsumerState<PredictView> {
     // var severityLevel = makeRequest();
   }
 
+  final textProvider =
+      StateProvider<String>((ref) => 'Select your symptoms/condition');
+
   Map<String, bool> symptoms = {
     "cough": false,
     "muscle_aches": false,
@@ -39,67 +42,97 @@ class _PredictViewState extends ConsumerState<PredictView> {
 
   Future<String> makeRequest() async {
     String result = '';
-    var url = 'http://127.0.0.1:8000/predict';
+    var url = 'https://hrthimrn-influenza-severity.hf.space/predict';
     Map<String, int> symptomsForApi =
         symptoms.map((key, value) => MapEntry(key, value ? 1 : 0));
+    Map<String, int> originalSymptoms =
+        symptoms.map((key, value) => MapEntry(key, value ? 1 : 0));
+    // remove symptoms that are not needed for the API request
     symptomsForApi.remove('fever_above_38_celcius');
     symptomsForApi.remove('comorbidity');
     var body = jsonEncode(symptomsForApi);
     var response = await http.post(
       Uri.parse(url),
       headers: {"Content-Type": "application/json"},
-      body: json.encode(body),
+      body: body,
     );
+    debugPrint(body);
     // error-handling
     if (response.statusCode == 200) {
       debugPrint('Success!');
+      debugPrint(result);
+      var apiResponse = jsonDecode(response.body);
+      int severity = apiResponse['severity'];
+      debugPrint(originalSymptoms.toString());
+      if (severity == 0) {
+        if (originalSymptoms['fever_above_38_celcius'] == 1 ||
+            originalSymptoms['comorbidity'] == 1) {
+          result =
+              'You have severe influenza symptoms, it is advisable to seek professional health immediately';
+        } else {
+          result =
+              'You have mild influenza symptoms, do recuperate well at home';
+        }
+      } else {
+        result =
+            'You have severe influenza symptoms, it is advisable to seek professional health immediately';
+      }
     } else {
+      result = 'A problem occur';
       debugPrint('Failed to make request.');
-      // Use `symptomsForApi` as the body of your request
     }
+    ref.read(textProvider.notifier).state = result;
     return result;
   }
 
   @override
   Widget build(BuildContext context) {
+    final text = ref.watch(textProvider);
     return Column(
       children: [
-        const Text(
-          'Select your symptoms/condition',
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Center(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ),
         Expanded(
           child: ListView.builder(
-              itemCount: symptoms.length,
-              // shrinkWrap: true,
-              itemBuilder: (context, index) {
-                final symptomKey = symptoms.keys.elementAt(index);
-                final formattedSymptomKey =
-                    symptomKey.replaceAll('_', ' ').capitalize();
-                return ListTile(
-                  title: Text(formattedSymptomKey),
-                  trailing: Checkbox(
-                    value: symptoms.values.elementAt(index),
-                    onChanged: (value) {
-                      setState(() {
+            itemCount: symptoms.length,
+            // shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final symptomKey = symptoms.keys.elementAt(index);
+              final formattedSymptomKey =
+                  symptomKey.replaceAll('_', ' ').capitalize();
+              return ListTile(
+                title: Text(formattedSymptomKey),
+                trailing: Checkbox(
+                  value: symptoms.values.elementAt(index),
+                  onChanged: (value) {
+                    setState(
+                      () {
                         symptoms[symptomKey] = value!;
-                      });
-                    },
-                  ),
-                );
-              }),
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
         ),
         Center(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () {
-                // var severityLevel = makeRequest();
-                debugPrint(symptoms.toString());
-              },
+              onPressed: makeRequest,
               child: const Text('Predict'),
             ),
           ),
