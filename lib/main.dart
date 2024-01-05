@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_service.dart';
+import 'package:influenza/views/history_view.dart';
 import 'package:influenza/views/login_view.dart';
+import 'package:influenza/views/predict_view.dart';
+import 'package:influenza/views/profile_view.dart';
 import 'package:influenza/views/register_view.dart';
 import 'package:influenza/views/verify_email_view.dart';
 import 'package:influenza/views/influenza_view.dart';
@@ -38,6 +41,9 @@ class MyApp extends StatelessWidget {
         registerRoute: (context) => const RegisterView(),
         influenzaHomeRoute: (context) => const InfluenzaView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
+        predictViewRoute: (context) => const PredictView(),
+        historyViewRoute: (context) => const HistoryView(),
+        profileViewRoute: (context) => const ProfileView(),
       },
     );
   }

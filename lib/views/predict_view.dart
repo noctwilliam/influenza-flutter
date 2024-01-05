@@ -14,45 +14,103 @@ class _PredictViewState extends ConsumerState<PredictView> {
   @override
   void initState() {
     super.initState();
-    var severityLevel = makeRequest();
+    // var severityLevel = makeRequest();
+  }
+
+  Map<String, bool> symptoms = {
+    "cough": false,
+    "muscle_aches": false,
+    "tiredness": false,
+    "sore_throat": false,
+    "runny_nose": false,
+    "stuffy_nose": false,
+    "fever": false,
+    "fever_above_38_celcius": false,
+    "nausea": false,
+    "vomiting": false,
+    "diarrhea": false,
+    "shortness_of_breath": false,
+    "difficulty_breathing": false,
+    "loss_of_taste": false,
+    "loss_of_smell": false,
+    "sneezing": false,
+    "comorbidity": false,
+  };
+
+  Future<String> makeRequest() async {
+    String result = '';
+    var url = 'http://127.0.0.1:8000/predict';
+    Map<String, int> symptomsForApi =
+        symptoms.map((key, value) => MapEntry(key, value ? 1 : 0));
+    symptomsForApi.remove('fever_above_38_celcius');
+    symptomsForApi.remove('comorbidity');
+    var body = jsonEncode(symptomsForApi);
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(body),
+    );
+    // error-handling
+    if (response.statusCode == 200) {
+      debugPrint('Success!');
+    } else {
+      debugPrint('Failed to make request.');
+      // Use `symptomsForApi` as the body of your request
+    }
+    return result;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      children: [
+        const Text(
+          'Select your symptoms/condition',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+              itemCount: symptoms.length,
+              // shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final symptomKey = symptoms.keys.elementAt(index);
+                final formattedSymptomKey =
+                    symptomKey.replaceAll('_', ' ').capitalize();
+                return ListTile(
+                  title: Text(formattedSymptomKey),
+                  trailing: Checkbox(
+                    value: symptoms.values.elementAt(index),
+                    onChanged: (value) {
+                      setState(() {
+                        symptoms[symptomKey] = value!;
+                      });
+                    },
+                  ),
+                );
+              }),
+        ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                // var severityLevel = makeRequest();
+                debugPrint(symptoms.toString());
+              },
+              child: const Text('Predict'),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 
-Future<String> makeRequest() async {
-  var url = 'http://127.0.0.1:8000/40';
-  var body = {
-    "cough": 1,
-    "muscle_aches": 1,
-    "tiredness": 1,
-    "sore_throat": 0,
-    "runny_nose": 1,
-    "stuffy_nose": 1,
-    "fever": 0,
-    "nausea": 0,
-    "vomiting": 1,
-    "diarrhea": 0,
-    "shortness_of_breath": 0,
-    "difficulty_breathing": 1,
-    "loss_of_taste": 1,
-    "loss_of_smell": 0,
-    "sneezing": 0
-  };
-
-  var response = await http.post(
-    Uri.parse(url),
-    headers: {"Content-Type": "application/json"},
-    body: json.encode(body),
-  );
-
-  if (response.statusCode == 200) {
-    debugPrint('Success!');
-  } else {
-    debugPrint('Failed to make request.');
+extension StringExtension on String {
+  String capitalize() {
+    return '${this[0].toUpperCase()}${substring(1)}';
   }
-  return jsonDecode(response.body);
 }
