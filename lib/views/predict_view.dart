@@ -14,7 +14,6 @@ class _PredictViewState extends ConsumerState<PredictView> {
   @override
   void initState() {
     super.initState();
-    // var severityLevel = makeRequest();
   }
 
   final textProvider =
@@ -131,9 +130,33 @@ class _PredictViewState extends ConsumerState<PredictView> {
         Center(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: makeRequest,
-              child: const Text('Predict'),
+            child: Row(
+              children: [
+                ElevatedButton(
+                  onPressed: makeRequest,
+                  child: const Text('Predict'),
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    if (text != 'Select your symptoms/condition') {
+                      return ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            symptoms.forEach((key, value) {
+                              symptoms[key] = false;
+                            });
+                          });
+                          ref.read(textProvider.notifier).state =
+                              'Select your symptoms/condition';
+                        },
+                        child: const Text('Reset'),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                )
+              ],
             ),
           ),
         ),
