@@ -43,6 +43,7 @@ class FirebaseCloudStorage {
             ownerUserIdField,
             isEqualTo: ownerUserId,
           )
+          .orderBy(dateCreatedField, descending: true)
           .get()
           .then(
             (value) => value.docs.map(
