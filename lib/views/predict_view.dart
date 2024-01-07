@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:influenza/services/auth/auth_service.dart';
+import 'package:influenza/services/cloud/firebase_cloud_storage.dart';
 
 class PredictView extends ConsumerStatefulWidget {
   const PredictView({super.key});
@@ -18,6 +20,7 @@ class _PredictViewState extends ConsumerState<PredictView> {
 
   final textProvider =
       StateProvider<String>((ref) => 'Select your symptoms/condition');
+  final severityProvider = StateProvider<String>((ref) => '');
 
   Map<String, bool> symptoms = {
     "cough": false,
@@ -40,7 +43,7 @@ class _PredictViewState extends ConsumerState<PredictView> {
   };
 
   Future<String> makeRequest() async {
-    String result = '';
+    String result = '', firebaseSeverity = '';
     var url = 'https://hrthimrn-influenza-severity.hf.space/predict';
     Map<String, int> symptomsForApi =
         symptoms.map((key, value) => MapEntry(key, value ? 1 : 0));
@@ -68,20 +71,35 @@ class _PredictViewState extends ConsumerState<PredictView> {
             originalSymptoms['comorbidity'] == 1) {
           result =
               'You have severe influenza symptoms, it is advisable to seek professional health immediately';
+          firebaseSeverity = 'Severe';
         } else {
           result =
               'You have mild influenza symptoms, do recuperate well at home';
+          firebaseSeverity = 'Not Severe';
         }
       } else {
         result =
             'You have severe influenza symptoms, it is advisable to seek professional health immediately';
+        firebaseSeverity = 'Severe';
       }
     } else {
       result = 'A problem occur';
       debugPrint('Failed to make request.');
     }
     ref.read(textProvider.notifier).state = result;
-    return result;
+    ref.read(severityProvider.notifier).state = firebaseSeverity;
+    storeResultToFirebase();
+    return firebaseSeverity;
+  }
+
+  void storeResultToFirebase() {
+    final currentUser = AuthService.firebase().currentUser!;
+    final firebaseCloudStorage = FirebaseCloudStorage();
+    final severity = ref.read(severityProvider);
+    firebaseCloudStorage.createNewHistory(
+      ownerUserId: currentUser.id,
+      severity: severity,
+    );
   }
 
   @override
@@ -127,19 +145,21 @@ class _PredictViewState extends ConsumerState<PredictView> {
             },
           ),
         ),
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                ElevatedButton(
-                  onPressed: makeRequest,
-                  child: const Text('Predict'),
-                ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    if (text != 'Select your symptoms/condition') {
-                      return ElevatedButton(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: makeRequest,
+                child: const Text('Predict'),
+              ),
+              Consumer(
+                builder: (context, ref, child) {
+                  if (text != 'Select your symptoms/condition') {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: ElevatedButton(
                         onPressed: () {
                           setState(() {
                             symptoms.forEach((key, value) {
@@ -150,14 +170,14 @@ class _PredictViewState extends ConsumerState<PredictView> {
                               'Select your symptoms/condition';
                         },
                         child: const Text('Reset'),
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                )
-              ],
-            ),
+                      ),
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              )
+            ],
           ),
         ),
       ],

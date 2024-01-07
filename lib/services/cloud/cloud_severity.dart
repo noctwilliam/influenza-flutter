@@ -15,6 +15,13 @@ class CloudSeverity {
     required this.dateCreated,
   });
 
+  /// Creates a [CloudSeverity] object from a [QueryDocumentSnapshot].
+  ///
+  /// The [snapshot] parameter is the document snapshot containing the data.
+  /// The [documentId] property is set to the ID of the snapshot.
+  /// The [ownerUserId] property is set to the value of the 'ownerUserId' field in the snapshot data.
+  /// The [severity] property is set to the value of the 'severity' field in the snapshot data as a string.
+  /// The [dateCreated] property is set to the value of the 'dateCreated' field in the snapshot data as a [DateTime] object.
   CloudSeverity.fromSnapshot(
       QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
       : documentId = snapshot.id,

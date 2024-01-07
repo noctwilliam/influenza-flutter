@@ -54,20 +54,24 @@ class FirebaseCloudStorage {
     }
   }
 
-  /// Creates a new history entry in Firebase Cloud Storage.
+  /// This method takes in the [ownerUserId] and [severity] as required parameters.
+  /// It adds a new document to the 'history' collection in the Firebase Cloud Storage
+  /// with the provided [ownerUserId] and [severity] values.
   ///
-  /// The [ownerUserId] parameter is required and specifies the ID of the owner user.
-  /// This method adds a new history entry with the specified [ownerUserId] and an empty severity field.
-  Future<CloudSeverity> createNewHistory({required String ownerUserId}) async {
+  /// Returns a [Future] that completes with a [CloudSeverity] object containing
+  /// the document ID, owner user ID, severity, and the date it was created.
+  Future<CloudSeverity> createNewHistory(
+      {required String ownerUserId, required String severity}) async {
     final document = await history.add({
       ownerUserIdField: ownerUserId,
-      severityField: '',
+      severityField: severity,
+      dateCreatedField: DateTime.now(),
     });
     final fetchedNote = await document.get();
     return CloudSeverity(
       documentId: fetchedNote.id,
       ownerUserId: ownerUserId,
-      severity: '',
+      severity: severity,
       dateCreated: DateTime.now(),
     );
   }
