@@ -13,4 +13,5 @@ abstract class AuthProvider implements AuthUser {
   Future<void> logOut();
   Future<void> sendEmailVerification();
   Future<void> initialize();
+  Future<void> resetPassword();
 }
