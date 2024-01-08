@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class FaqView extends ConsumerWidget {
+class FaqView extends StatelessWidget {
   const FaqView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('FAQ'),
+      ),
+      body: const Center(
+        child: Text('FAQ'),
+      ),
+    );
   }
 }

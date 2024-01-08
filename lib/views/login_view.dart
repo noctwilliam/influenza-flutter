@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_exceptions.dart';
+import 'package:influenza/utilities/go_router.dart';
 import 'package:influenza/utilities/show_error_dialog.dart';
 import 'package:influenza/services/auth/auth_service.dart';
 
@@ -81,13 +82,10 @@ class _LoginViewState extends State<LoginView> {
                       final user = AuthService.firebase().currentUser;
                       if (user?.isEmailVerified ?? false) {
                         // user's email is verified
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                          influenzaHomeRoute,
-                          (route) => false,
-                        );
+                        goRouter.pushReplacementNamed('home');
                       } else {
                         // user's email is not verified
-                        Navigator.of(context).pushNamed(verifyEmailRoute);
+                        goRouter.pushReplacementNamed('verify');
                       }
                     } on UserNotFoundAuthException {
                       await showErrorDialog(

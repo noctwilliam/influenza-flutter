@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:go_router/go_router.dart';
+// import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:influenza/utilities/go_router.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/enums/menu_action.dart';
 import 'dart:developer' as devtools show log;
@@ -8,29 +10,12 @@ import 'package:influenza/views/history_view.dart';
 import 'package:influenza/views/predict_view.dart';
 import 'package:influenza/views/profile_view.dart';
 
-// class InfluenzaView extends ConsumerWidget {
-//   const InfluenzaView({super.key});
-
-//   @override
-//   Widget build
-// }
-
 class InfluenzaView extends StatefulWidget {
   const InfluenzaView({super.key});
 
   @override
   State<InfluenzaView> createState() => _InfluenzaViewState();
 }
-
-// class Title extends StateNotifier<String> {
-//   Title() : super('Home');
-//   void setTitle(String title) => state = title;
-//   String get value => state;
-// }
-
-// final currentPageProvider = StateNotifierProvider<Title, String>(
-//   (ref) => Title(),
-// );
 
 class _InfluenzaViewState extends State<InfluenzaView> {
   int currentPageIndex = 0;
@@ -43,164 +28,185 @@ class _InfluenzaViewState extends State<InfluenzaView> {
 
   @override
   Widget build(BuildContext context) {
+    return MaterialApp.router(
+      routerConfig: goRouter,
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class ScaffoldWithNestedNavigation extends StatelessWidget {
+  const ScaffoldWithNestedNavigation({
+    Key? key,
+    required this.navigationShell,
+  }) : super(
+          key: key ?? const ValueKey<String>('ScaffoldWithNestedNavigation'),
+        );
+  final StatefulNavigationShell navigationShell;
+
+  void _goBranch(int index) {
+    navigationShell.goBranch(
+      index,
+      // A common pattern when using bottom navigation bars is to support
+      // navigating to the initial location when tapping the item that is
+      // already active. This example demonstrates how to support this behavior,
+      // using the initialLocation parameter of goBranch.
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldWithNavigationBar(
+      body: navigationShell,
+      selectedIndex: navigationShell.currentIndex,
+      onDestinationSelected: _goBranch,
+    );
+  }
+}
+
+class ScaffoldWithNavigationBar extends StatelessWidget {
+  const ScaffoldWithNavigationBar({
+    super.key,
+    required this.body,
+    required this.selectedIndex,
+    required this.onDestinationSelected,
+  });
+  final Widget body;
+  final int selectedIndex;
+  final ValueChanged<int> onDestinationSelected;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Influenza Application'),
-        actions: [
-          PopupMenuButton<MenuAction>(
-            onSelected: (MenuAction value) async {
-              devtools.log(value.toString());
-              final navigator = Navigator.of(context);
-              switch (value) {
-                case MenuAction.logout:
-                  final logout = await showLogOutDialog(context);
-                  if (logout) {
-                    await AuthService.firebase().logOut();
-                    navigator.pushNamedAndRemoveUntil(loginRoute, (_) => false);
-                  }
-              }
-            },
-            itemBuilder: (context) => <PopupMenuEntry<MenuAction>>[
-              const PopupMenuItem<MenuAction>(
-                value: MenuAction.logout,
-                child: Text(
-                  'Sign out',
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: _pages[currentPageIndex],
+      body: body,
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: (int index) {
-          setState(() {
-            currentPageIndex = index;
-          });
-        },
-        indicatorColor: Colors.amber,
-        selectedIndex: currentPageIndex,
-        destinations: const <Widget>[
+        selectedIndex: selectedIndex,
+        destinations: const [
           NavigationDestination(
-            selectedIcon: Icon(Icons.home),
-            icon: Icon(Icons.home_outlined),
             label: 'Home',
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
           ),
           NavigationDestination(
-            icon: Icon(Icons.online_prediction),
-            label: 'Predict',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.history),
-            label: 'History',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+              label: 'Predict', icon: Icon(Icons.online_prediction)),
+          NavigationDestination(label: 'History', icon: Icon(Icons.history)),
+          NavigationDestination(label: 'Profile', icon: Icon(Icons.person)),
         ],
+        onDestinationSelected: onDestinationSelected,
       ),
     );
   }
 }
 
-class InfluenzaHome extends StatefulWidget {
+class InfluenzaHome extends StatelessWidget {
   const InfluenzaHome({
     super.key,
   });
 
   @override
-  State<InfluenzaHome> createState() => _InfluenzaHomeState();
-}
-
-class _InfluenzaHomeState extends State<InfluenzaHome> {
-  @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              splashColor: Colors.teal[600],
-              onTap: () {
-                Navigator.of(context).pushNamed(influenzaHomeRoute);
-              },
-              child: SizedBox(
-                width: 350,
-                height: 110,
-                child: Center(
-                  child: Text('Home',
-                      style: Theme.of(context).textTheme.headlineSmall),
-                ),
-              ),
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(5)),
-          Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              splashColor: Theme.of(context).colorScheme.primary,
-              onTap: () {
-                Navigator.of(context).pushNamed(predictViewRoute);
-              },
-              child: SizedBox(
-                width: 350,
-                height: 110,
-                child: Center(
-                  child: Text(
-                    'Predict Severity',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(5)),
-          Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              splashColor: Theme.of(context).colorScheme.primary,
-              onTap: () {
-                Navigator.of(context).pushNamed(historyViewRoute);
-              },
-              child: SizedBox(
-                width: 350,
-                height: 110,
-                child: Center(
-                  child: Text(
-                    'Severity History',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const Padding(padding: EdgeInsets.all(5)),
-          Card(
-            clipBehavior: Clip.hardEdge,
-            child: InkWell(
-              splashColor: Theme.of(context).colorScheme.primary,
-              onTap: () {
-                Navigator.of(context).pushNamed(faqRoute);
-              },
-              child: SizedBox(
-                width: 350,
-                height: 110,
-                child: Center(
-                  child: Text(
-                    'FAQ',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Influenza App'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              final signOut = await showLogOutDialog(context);
+              if (signOut) {
+                await AuthService.firebase().logOut();
+                goRouter.pushReplacement(loginRoute);
+              }
+            },
+            icon: const Icon(Icons.logout),
           ),
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    goRouter.goNamed('home');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 110,
+                    child: Center(
+                      child: Text('Home',
+                          style: Theme.of(context).textTheme.headlineSmall),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    goRouter.goNamed('predict');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 110,
+                    child: Center(
+                      child: Text(
+                        'Predict Severity',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    goRouter.goNamed('history');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 110,
+                    child: Center(
+                      child: Text(
+                        'Severity History',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
+              Card(
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  splashColor: Theme.of(context).colorScheme.primary,
+                  onTap: () {
+                    goRouter.goNamed('faq');
+                  },
+                  child: SizedBox(
+                    width: 350,
+                    height: 110,
+                    child: Center(
+                      child: Text(
+                        'FAQ',
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -109,7 +109,7 @@ class FirebaseAuthProvider implements AuthProvider {
   Future<void> resetPassword() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: user.email!);
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     } else {
       throw UserNotLoggedInException();
     }

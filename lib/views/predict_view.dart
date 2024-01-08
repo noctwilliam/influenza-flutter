@@ -105,82 +105,87 @@ class _PredictViewState extends ConsumerState<PredictView> {
   @override
   Widget build(BuildContext context) {
     final text = ref.watch(textProvider);
-    return Column(
-      children: [
-        Center(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Center(
-              child: Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Predict Severity'),
+      ),
+      body: Column(
+        children: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Center(
+                child: Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: symptoms.length,
-            // shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final symptomKey = symptoms.keys.elementAt(index);
-              final formattedSymptomKey =
-                  symptomKey.replaceAll('_', ' ').capitalize();
-              return ListTile(
-                title: Text(formattedSymptomKey),
-                trailing: Checkbox(
-                  value: symptoms.values.elementAt(index),
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        symptoms[symptomKey] = value!;
-                      },
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: makeRequest,
-                child: const Text('Predict'),
-              ),
-              Consumer(
-                builder: (context, ref, child) {
-                  if (text != 'Select your symptoms/condition') {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            symptoms.forEach((key, value) {
-                              symptoms[key] = false;
-                            });
-                          });
-                          ref.read(textProvider.notifier).state =
-                              'Select your symptoms/condition';
+          Expanded(
+            child: ListView.builder(
+              itemCount: symptoms.length,
+              // shrinkWrap: true,
+              itemBuilder: (context, index) {
+                final symptomKey = symptoms.keys.elementAt(index);
+                final formattedSymptomKey =
+                    symptomKey.replaceAll('_', ' ').capitalize();
+                return ListTile(
+                  title: Text(formattedSymptomKey),
+                  trailing: Checkbox(
+                    value: symptoms.values.elementAt(index),
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          symptoms[symptomKey] = value!;
                         },
-                        child: const Text('Reset'),
-                      ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              )
-            ],
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: makeRequest,
+                  child: const Text('Predict'),
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    if (text != 'Select your symptoms/condition') {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              symptoms.forEach((key, value) {
+                                symptoms[key] = false;
+                              });
+                            });
+                            ref.read(textProvider.notifier).state =
+                                'Select your symptoms/condition';
+                          },
+                          child: const Text('Reset'),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
