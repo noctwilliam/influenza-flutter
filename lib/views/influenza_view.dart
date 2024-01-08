@@ -128,7 +128,7 @@ class _InfluenzaHomeState extends State<InfluenzaHome> {
             child: InkWell(
               splashColor: Colors.teal[600],
               onTap: () {
-                debugPrint('sek kito');
+                Navigator.of(context).pushNamed(influenzaHomeRoute);
               },
               child: SizedBox(
                 width: 350,
@@ -146,7 +146,7 @@ class _InfluenzaHomeState extends State<InfluenzaHome> {
             child: InkWell(
               splashColor: Theme.of(context).colorScheme.primary,
               onTap: () {
-                debugPrint('tap tap bich');
+                Navigator.of(context).pushNamed(predictViewRoute);
               },
               child: SizedBox(
                 width: 350,
@@ -166,7 +166,7 @@ class _InfluenzaHomeState extends State<InfluenzaHome> {
             child: InkWell(
               splashColor: Theme.of(context).colorScheme.primary,
               onTap: () {
-                debugPrint('tap tap bich');
+                Navigator.of(context).pushNamed(historyViewRoute);
               },
               child: SizedBox(
                 width: 350,
@@ -186,7 +186,7 @@ class _InfluenzaHomeState extends State<InfluenzaHome> {
             child: InkWell(
               splashColor: Theme.of(context).colorScheme.primary,
               onTap: () {
-                debugPrint('tap tap bich');
+                Navigator.of(context).pushNamed(faqRoute);
               },
               child: SizedBox(
                 width: 350,

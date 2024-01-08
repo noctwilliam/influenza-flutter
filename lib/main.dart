@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_service.dart';
+import 'package:influenza/views/faq_view.dart';
 import 'package:influenza/views/history_view.dart';
 import 'package:influenza/views/login_view.dart';
 import 'package:influenza/views/predict_view.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
         predictViewRoute: (context) => const PredictView(),
         historyViewRoute: (context) => const HistoryView(),
         profileViewRoute: (context) => const ProfileView(),
+        faqRoute: (context) => const FaqView(),
       },
     );
   }

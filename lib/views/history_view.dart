@@ -14,7 +14,6 @@ class HistoryView extends StatefulWidget {
 class _HistoryViewState extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
-    // TODO: Make history view
     return FutureBuilder<Iterable<CloudSeverity>>(
       future: FirebaseCloudStorage()
           .getHistory(ownerUserId: AuthService.firebase().currentUser!.id),

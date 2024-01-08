@@ -5,3 +5,4 @@ const verifyEmailRoute = '/verify-email/';
 const predictViewRoute = '/predict/';
 const historyViewRoute = '/history/';
 const profileViewRoute = '/profile/';
+const faqRoute = '/faq/';
