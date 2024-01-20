@@ -26,9 +26,13 @@ class FirebaseCloudStorage {
   /// The stream emits a new iterable whenever there is a change in the history.
   /// Only [CloudSeverity] objects with matching [ownerUserId] are included in the result.
   Stream<Iterable<CloudSeverity>> allHistory({required String ownerUserId}) =>
-      history.snapshots().map((event) => event.docs
-          .map((doc) => CloudSeverity.fromSnapshot(doc))
-          .where((history) => history.ownerUserId == ownerUserId));
+      history
+          .orderBy(dateCreatedField,
+              descending: true) // Sort by dateCreatedField in descending order
+          .snapshots()
+          .map((event) => event.docs
+              .map((doc) => CloudSeverity.fromSnapshot(doc))
+              .where((history) => history.ownerUserId == ownerUserId));
 
   /// Retrieves the history of severities for a specific owner user.
   ///

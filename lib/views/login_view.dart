@@ -110,10 +110,7 @@ class _LoginViewState extends State<LoginView> {
               padding: const EdgeInsets.all(8.0),
               child: FilledButton.tonal(
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil(
-                    registerRoute,
-                    (route) => false,
-                  );
+                  goRouter.goNamed('register');
                 },
                 child: const Text(
                   'Not registered yet?, Register here!',

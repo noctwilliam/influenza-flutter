@@ -6,6 +6,7 @@ import 'package:influenza/views/influenza_view.dart';
 import 'package:influenza/views/login_view.dart';
 import 'package:influenza/views/predict_view.dart';
 import 'package:influenza/views/profile_view.dart';
+import 'package:influenza/views/register_view.dart';
 import 'package:influenza/views/verify_email_view.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -119,6 +120,15 @@ final goRouter = GoRouter(
       pageBuilder: (context, state) {
         return const NoTransitionPage(
           child: VerifyEmailView(),
+        );
+      },
+    ),
+    GoRoute(
+      name: 'register',
+      path: '/register',
+      pageBuilder: (context, state) {
+        return const NoTransitionPage(
+          child: RegisterView(),
         );
       },
     ),

@@ -18,29 +18,54 @@ class _HistoryViewState extends State<HistoryView> {
       appBar: AppBar(
         title: const Text('History'),
       ),
-      body: FutureBuilder<Iterable<CloudSeverity>>(
-        future: FirebaseCloudStorage()
-            .getHistory(ownerUserId: AuthService.firebase().currentUser!.id),
+      body: StreamBuilder<Iterable<CloudSeverity>>(
+        stream: FirebaseCloudStorage().allHistory(
+          ownerUserId: AuthService.firebase().currentUser!.id,
+        ),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final history = snapshot.data!;
-            return ListView.builder(
-              itemCount: history.length,
-              itemBuilder: (context, index) {
-                final severity = history.elementAt(index);
-                return ListTile(
-                  title: Text(severity.severity),
-                  subtitle: Text(severity.dateCreated.toString()),
-                );
-              },
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error retrieving history'),
             );
-          } else if (snapshot.hasError) {
-            return Text(snapshot.error.toString());
-          } else {
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
+
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('No history'),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              final history = snapshot.data!.elementAt(index);
+              return ListTile(
+                title: Text(
+                  history.severity,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  history.dateCreated.toString(),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () async {
+                    await FirebaseCloudStorage().deleteHistory(
+                      documentId: history.documentId,
+                    );
+                  },
+                ),
+              );
+            },
+          );
         },
       ),
     );

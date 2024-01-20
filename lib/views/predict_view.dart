@@ -31,6 +31,9 @@ class _PredictViewState extends ConsumerState<PredictView> {
     "loss_of_taste": false,
     "muscle_aches": false,
     "cough": false,
+    "coughing_with_blood": false,
+    "dizziness_when_standing": false,
+    "chest_pains": false,
     "diarrhea": false,
     "vomiting": false,
     "runny_nose": false,
@@ -47,6 +50,8 @@ class _PredictViewState extends ConsumerState<PredictView> {
     // remove symptoms that are not needed for the API request
     symptomsForApi.remove('high_fever_(>_38_celcius)');
     symptomsForApi.remove('comorbidity');
+    symptomsForApi.remove('coughing_with_blood');
+    symptomsForApi.remove('chest_pains');
     var body = jsonEncode(symptomsForApi);
     var response = await http.post(
       Uri.parse(url),
@@ -61,8 +66,10 @@ class _PredictViewState extends ConsumerState<PredictView> {
       int severity = apiResponse['severity'];
       debugPrint(originalSymptoms.toString());
       if (severity == 0) {
-        if (originalSymptoms['fever_above_38_celcius'] == 1 ||
-            originalSymptoms['comorbidity'] == 1) {
+        if (originalSymptoms['high_fever_(>_38_celcius)'] == 1 ||
+            originalSymptoms['comorbidity'] == 1 ||
+            originalSymptoms['coughing_with_blood'] == 1 ||
+            originalSymptoms['chest_pains'] == 1) {
           result =
               'You have severe influenza symptoms, it is advisable to seek professional health immediately';
           firebaseSeverity = 'Severe';

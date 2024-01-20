@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_exceptions.dart';
+import 'package:influenza/utilities/go_router.dart';
 import 'package:influenza/utilities/show_error_dialog.dart';
 import 'package:influenza/services/auth/auth_service.dart';
 
@@ -109,8 +110,7 @@ class _RegisterViewState extends State<RegisterView> {
             padding: const EdgeInsets.all(8.0),
             child: FilledButton.tonal(
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+                  goRouter.goNamed('login');
                 },
                 child: const Text('Already registered? Login here!')),
           )
