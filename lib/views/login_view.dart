@@ -82,10 +82,10 @@ class _LoginViewState extends State<LoginView> {
                       final user = AuthService.firebase().currentUser;
                       if (user?.isEmailVerified ?? false) {
                         // user's email is verified
-                        goRouter.pushReplacementNamed('home');
+                        goRouter.goNamed('home');
                       } else {
                         // user's email is not verified
-                        goRouter.pushReplacementNamed('verify');
+                        goRouter.goNamed('verify');
                       }
                     } on UserNotFoundAuthException {
                       await showErrorDialog(

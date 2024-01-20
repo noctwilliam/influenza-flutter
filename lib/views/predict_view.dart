@@ -23,23 +23,18 @@ class _PredictViewState extends ConsumerState<PredictView> {
   final severityProvider = StateProvider<String>((ref) => '');
 
   Map<String, bool> symptoms = {
-    "cough": false,
-    "muscle_aches": false,
-    "tiredness": false,
-    "sore_throat": false,
-    "runny_nose": false,
-    "stuffy_nose": false,
-    "fever": false,
-    "fever_above_38_celcius": false,
-    "nausea": false,
-    "vomiting": false,
-    "diarrhea": false,
+    "high_fever_(>_38_celcius)": false,
     "shortness_of_breath": false,
     "difficulty_breathing": false,
-    "loss_of_taste": false,
-    "loss_of_smell": false,
-    "sneezing": false,
     "comorbidity": false,
+    "loss_of_smell": false,
+    "loss_of_taste": false,
+    "muscle_aches": false,
+    "cough": false,
+    "diarrhea": false,
+    "vomiting": false,
+    "runny_nose": false,
+    "sneezing": false
   };
 
   Future<String> makeRequest() async {
@@ -50,7 +45,7 @@ class _PredictViewState extends ConsumerState<PredictView> {
     Map<String, int> originalSymptoms =
         symptoms.map((key, value) => MapEntry(key, value ? 1 : 0));
     // remove symptoms that are not needed for the API request
-    symptomsForApi.remove('fever_above_38_celcius');
+    symptomsForApi.remove('high_fever_(>_38_celcius)');
     symptomsForApi.remove('comorbidity');
     var body = jsonEncode(symptomsForApi);
     var response = await http.post(
@@ -58,7 +53,6 @@ class _PredictViewState extends ConsumerState<PredictView> {
       headers: {"Content-Type": "application/json"},
       body: body,
     );
-    debugPrint(body);
     // error-handling
     if (response.statusCode == 200) {
       debugPrint('Success!');
