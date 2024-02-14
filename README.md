@@ -1,4 +1,4 @@
-### Healthcare Tracker App; Influenza Severity Classification Using Machine Learning
+### Healthcare Screening App; Influenza Severity Using Rule-Based Classification
 
 A new Flutter project.
 
