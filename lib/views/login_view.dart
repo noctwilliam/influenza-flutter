@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:influenza/constants/routes.dart';
+// import 'package:influenza/constants/routes.dart';
 import 'package:influenza/services/auth/auth_exceptions.dart';
 import 'package:influenza/utilities/go_router.dart';
 import 'package:influenza/utilities/show_error_dialog.dart';
@@ -106,16 +106,43 @@ class _LoginViewState extends State<LoginView> {
                   },
                   child: const Text("Login")),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: FilledButton.tonal(
-                onPressed: () {
-                  goRouter.goNamed('register');
-                },
-                child: const Text(
-                  'Not registered yet?, Register here!',
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      goRouter.goNamed('register');
+                    },
+                    child: const Text(
+                      'Not registered yet?, Register here!',
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FilledButton.tonal(
+                    onPressed: () {
+                      final email = _email.text.trim();
+                      if (email.isNotEmpty) {
+                        AuthService.firebase().resetPassword(email);
+                        showErrorDialog(
+                          context,
+                          'Password reset email sent',
+                        );
+                      } else {
+                        showErrorDialog(
+                          context,
+                          'Please enter your email address',
+                        );
+                      }
+                    },
+                    child: const Text(
+                      'Forgot your password?, Click here',
+                    ),
+                  ),
+                ),
+              ],
             )
           ],
         ),

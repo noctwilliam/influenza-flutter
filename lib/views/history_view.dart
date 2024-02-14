@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:influenza/services/auth/auth_service.dart';
 import 'package:influenza/services/cloud/firebase_cloud_storage.dart';
 import 'package:influenza/services/cloud/cloud_severity.dart';
+import 'package:intl/intl.dart';
 
 class HistoryView extends StatefulWidget {
   const HistoryView({super.key});
@@ -53,7 +54,7 @@ class _HistoryViewState extends State<HistoryView> {
                   ),
                 ),
                 subtitle: Text(
-                  history.dateCreated.toString(),
+                  DateFormat('yyyy-MM-dd - kk:mm').format(history.dateCreated),
                 ),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
