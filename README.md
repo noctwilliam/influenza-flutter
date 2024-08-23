@@ -1,16 +1,11 @@
-### Healthcare Screening App; Influenza Severity Using Rule-Based Classification
+### Influenza A & B: Healthcare Screening App Using Machine Learning and Rule-Based Classification
 
-A new Flutter project.
+A simple flutter app for my degree final year project
 
-#### Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+#### Tech Stack
+- `Flutter` (thorough docs)
+- `Material 3 UI` (default ady, and BORDER RADIUS FTW)
+- `Firebase` (bcs got nice docs n easy flutter integration)
+- `HuggingFace Spaces` (free hosting)
+- `FastAPI` (to wrap my ML model)
+- `Docker` (to containerize the API to be put into HuggingFace)
