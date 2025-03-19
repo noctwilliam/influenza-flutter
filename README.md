@@ -9,3 +9,6 @@ A simple flutter app for my degree final year project
 - `HuggingFace Spaces` (free hosting)
 - `FastAPI` (to wrap my ML model)
 - `Docker` (to containerize the API to be put into HuggingFace)
+
+The model and dataset is trained [here](https://github.com/noctwilliam/fyp-data)<br>
+The API is hosted [here](https://huggingface.co/spaces/hrthimrn/influenza-severity)
